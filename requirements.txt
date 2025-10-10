@@ -1,0 +1,11 @@
+Django
+Pillow
+jinja2
+gunicorn
+contextvars
+typing-extensions
+aiohttp
+click
+wheel
+multidict
+psycopg2-binary
