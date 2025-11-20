@@ -9,3 +9,9 @@ click
 wheel
 multidict
 psycopg2-binary
+numpy
+librosa
+soundfile
+crepe
+tensorflow
+music21
