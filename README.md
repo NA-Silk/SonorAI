@@ -12,6 +12,6 @@ pip install psycopg2 <br>
 pip install psycopg2-binary <br>
 pip install django.db <br>
 
-3. Dev commands: <br>
+2. Dev commands: <br>
 python manage.py makemigrations <br>
 python manage.py migrate <br>
