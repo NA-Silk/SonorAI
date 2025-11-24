@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>My Files</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<script>
+    //
+</script>
+<body>
+
+<!-- Navigation bar -->
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">SonorAI</a>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li>
+                <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                <a class="btn btn-link" href="{% url 'logout' %}">Logout</a>
+            </li>
+            {% else %}
+            <li>
+                <form class="form-inline" action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Username" name="username" >
+                        <input type="password" class="form-control" placeholder="Password" name="psw" >
+                        <button class="btn btn-primary" type="submit">Login</button>
+                        <a class="btn btn-link" href="{% url 'register' %}">Sign Up</a>
+                    </div>
+                </form>
+            </li>
+            {% endif %}
+        </ul>
+
+    </div>
+</nav>
+
+<!-- MyFiles page -->
+<h2>Your MusicXML Files</h2>
+
+{% if files %}
+<table class="table table-bordered mt-4">
+    <thead>
+        <tr>
+            <th style="width:fit-content">Title</th>
+            <th style="width:fit-content">Creation Date</th>
+            <th style="width:700px;">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for file in files %}
+        <tr>
+            <td>{{ file.title }}</td>
+            <td>{{ file.creation_date }}</td>
+            <td>
+                <a href="{% url 'download_musicxml' file.pk %}" class="btn btn-success btn-sm">Dowload</a>
+                <form action="{% url 'rename_myfiles' file.pk %}" method="post" style="margin:0; display:flex; gap:8px;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-primary">Rename</button>
+                    <input type="text" name="name" value="{{ file.title  }}" class="form-control form-control-sm" style="max-width:500px;">
+                </form>
+                <a href="{% url 'delete_myfiles' file.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<h4>No saved MusicXML files</h4>
+{% endif %}
+
+</body>
+</html>

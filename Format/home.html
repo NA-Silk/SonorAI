@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SonorAI - Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <div class="page active">
+            <div class="page-container">
+                <div class="header">
+                    <div class="logo-box">
+                        <p class="logo-text">SonorAI</p>
+                    </div>
+                    <div class="nav-buttons">
+                        <a href="home.html" class="nav-btn">Home</a>
+                        <a href="myfiles.html" class="nav-btn">My Files</a>
+                        <a href="login.html" class="nav-btn">Log In</a>
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <div class="logo-image">
+                                <img src="https://www.figma.com/api/mcp/asset/40822abc-1650-4786-a7c2-ad0aa3e20e9c" alt="SonorAI Logo">
+                            </div>
+                            <p class="title">Generate Music Tab</p>
+                        </div>
+                        <div class="card-buttons">
+                            <label class="upload-btn">
+                                <input type="file" accept="audio/*" id="audio-upload" onchange="handleFileUpload(event)">
+                                <span>Upload Audio File</span>
+                            </label>
+                            <p id="file-name" class="file-name"></p>
+                            <button class="download-btn" onclick="handleDownload()">
+                                <span>Download</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

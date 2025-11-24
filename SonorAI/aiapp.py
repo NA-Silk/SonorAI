@@ -11,6 +11,7 @@ from music21.tempo import MetronomeMark
 from music21.meter.base import TimeSignature
 from music21.note import Note, Rest
 from music21.chord import Chord
+from music21.metadata import Metadata
 
 class AudioAnalysis: 
     @staticmethod
@@ -147,6 +148,8 @@ class AudioAnalysis:
             prev = curr + forward
 
         # Fill MusicXML score data
+        score.insert(0, Metadata())
+        score.metadata.title = title
         score.append(part) # Add part
         score.write(fmt="musicxml", fp=output_path) # Write to MusicXML file
 
