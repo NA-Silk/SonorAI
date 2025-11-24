@@ -27,11 +27,13 @@ def login_request(request):
 
         # Validate credentials
         user = authenticate(username=username, password=password)
-        if user is not None: # Valid case
+        
+        if user: # Valid case
             login(request, user)
             return redirect('homepage')
         
         else: # Invalid case
+            context["message"] = "Invalid username or password."
             return render(request, 'login.html', context)
     
     else: # Incorrect method
@@ -48,29 +50,26 @@ def register_request(request):
         password = request.POST['psw']
         first_name = request.POST['firstname']
         last_name = request.POST['lastname']
-        user_exist = False
 
-        try: # Check if duplicate
-            User.objects.get(username=username)
-            user_exist = True
-        except: # Log new user
-            logger.debug("{} is new user".format(username))
+        # Check duplicates
+        if User.objects.filter(username=username).exists():
+            context["message"] = "Username already exists."
+            return render(request, "register.html", context)
 
         # Generate new user
-        if not user_exist:
+        else:
             user = User.objects.create_user(
                 username=username, 
                 first_name=first_name, 
                 last_name=last_name,
                 password=password
             )
-
             # Login
             login(request, user)
             return redirect("homepage")
         
-        else: # Incorrect method
-            return render(request, 'register.html', context)
+    else: # Incorrect method
+        return render(request, 'register.html', context)
 
 def upload_audio(request): 
     context = {}
@@ -83,6 +82,7 @@ def upload_audio(request):
             return HttpResponse("No file uploaded.")
         if not audio_file.name.lower().endswith(".wav"): 
             return HttpResponse("Invalid file type.")
+        
         input_path = "temp.wav"
 
         # Cleanup old AI analysis input (if exists)
@@ -103,7 +103,9 @@ def upload_audio(request):
 
         # Retrieve results
         if not os.path.exists("out.musicxml"): 
-            return HttpResponse("Audio file analysis failed.")
+            context["message"] = "Audio analysis failed."
+            return render(request, "index.html", context)
+        
         with open("out.musicxml", "r", encoding="utf-8") as file: 
             musicxml = file.read()
         
@@ -127,7 +129,6 @@ def upload_audio(request):
                 "message": "MusicXML stored in My Files.", 
                 "pk": file.pk # For download button
             }
-            return render(request, "index.html", context)
 
         # Return contents if the user is not signed in
         else: 
@@ -135,34 +136,32 @@ def upload_audio(request):
                 "musicxml": musicxml, 
                 "message": "MusicXML not stored, sign in to store and download file."
             }
-            return render(request, "index.html", context)
+        
+        return render(request, "index.html", context)
     
     else: # Incorrect method
         return render(request, "index.html", context)
         
 def download_musicxml(request, pk): 
-    context = {}
     # Check method
     if request.method == 'GET': 
-        musicxml = MusicFile.objects.get(pk=pk)
-        response = HttpResponse(musicxml.musicxml, content_type="application/xml")
-        response['Content-Disposition'] = f'attachment; filename="{musicxml.title}.musicxml"'
+        file = get_object_or_404(MusicFile, pk=pk, user=request.user)
+        response = HttpResponse(file.musicxml, content_type="application/xml")
+        response['Content-Disposition'] = f'attachment; filename="{file.title}.musicxml"'
         return response
 
 def delete_myfiles(request, pk): 
-    context = {}
     file = get_object_or_404(MusicFile, pk=pk, user=request.user)
     file.delete()
-    return render(request, "myfiles.html", context)
+    return redirect("myfiles")
 
 def rename_myfiles(request, pk): 
-    context = {}
     file = get_object_or_404(MusicFile, pk=pk, user=request.user)
     name = request.POST.get("name", "").strip()
     if name: 
         file.title = name
         file.save()
-    return render(request, "myfiles.html", context)
+    return redirect("myfiles")
 
 # Pages
 def homepage_view(request): 
@@ -177,7 +176,7 @@ def myfiles_view(request):
     if request.method == 'GET': 
         # Send user to login page if not logged in
         if not request.user.is_authenticated: 
-            return render(request, "login.html", context)
+            return redirect("login")
         
         # Get matching MusicXML files
         files = MusicFile.objects.filter(user=request.user)
