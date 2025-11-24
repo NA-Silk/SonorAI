@@ -9,6 +9,8 @@ from . import aiapp
 from collections import defaultdict
 import logging
 import os
+from .integration.system_service import system
+
 
 # Start logging
 logger = logging.getLogger(__name__)
@@ -99,8 +101,12 @@ def upload_audio(request):
                 file.write(chunk)
 
         # Run AI analysis (stores output as out.musicxml in current path)
-        aiapp.AudioAnalysis.audio_analysis(audio_file=input_path, title=audio_file.name.replace(".wav", ""))
-
+        musicxml = system.generate_and_save_music_file(
+            username=request.user.username if request.user.is_authenticated else "guest",
+            instrument_type="guitar",
+            audio_file_path=input_path,
+            title=audio_file.name.replace(".wav", "")
+        )
         # Retrieve results
         if not os.path.exists("out.musicxml"): 
             return HttpResponse("Audio file analysis failed.")
