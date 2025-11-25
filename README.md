@@ -1,6 +1,6 @@
 # SonorAI
 
-## Setup dev environment: 
+## Setting up dev environment: 
 1. Ensure Python 3.12-3.13 is installed (Python 3.13.9 is recommended)
 2. Ensure \Users\<user>\AppData\Roaming\Python\Python313\Scripts is in PATH
 3. Configure a local copy of the git repository
