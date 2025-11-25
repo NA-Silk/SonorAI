@@ -2,7 +2,7 @@
 
 ## Setting up dev environment: 
 1. Ensure Python 3.12-3.13 is installed (Python 3.13.9 is recommended)
-2. Ensure \Users\<user>\AppData\Roaming\Python\Python313\Scripts is in PATH
+2. Ensure "C:\Users\<user>\AppData\Roaming\Python\<python version>\Scripts" is in PATH
 3. Configure a local copy of the git repository
 4. Setup the project Python environment:
    * py -3.13 -m pip install virtualenv
