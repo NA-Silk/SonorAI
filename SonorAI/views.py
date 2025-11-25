@@ -62,7 +62,8 @@ def register_request(request):
                 username=username, 
                 first_name=first_name, 
                 last_name=last_name,
-                password=password
+                password=password,
+                email=username
             )
             # Login
             login(request, user)

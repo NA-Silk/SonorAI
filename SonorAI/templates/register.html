@@ -44,14 +44,14 @@
 
                         <form action="{% url 'register' %}" method="post" class="login-form">
                             {% csrf_token %}
-                            <label class="form-label">Email:</label>
-                            <input type="email" name="username" placeholder="Enter your email" class="form-input" required>
+                            <label class="form-label">Username/Email:</label>
+                            <input type="username" name="username" placeholder="Enter your username/email" class="form-input" required>
 
                             <label class="form-label">First Name:</label>
-                            <input type="text" name="firstname" placeholder="Enter your first name" class="form-input" required>
+                            <input type="text" name="firstname" placeholder="Enter your first name" class="form-input">
 
                             <label class="form-label">Last Name:</label>
-                            <input type="text" name="lastname" placeholder="Enter your last name" class="form-input" required>
+                            <input type="text" name="lastname" placeholder="Enter your last name" class="form-input">
 
                             <label class="form-label">Password:</label>
                             <input type="password" name="psw" placeholder="Enter your password" class="form-input" required>

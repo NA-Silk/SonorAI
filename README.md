@@ -5,14 +5,18 @@
 2. Ensure "C:\Users\<user>\AppData\Roaming\Python\<python version>\Scripts" is in PATH
 3. Configure a local copy of the git repository
 4. Setup the project Python environment: 
-   * $ py -3.13 -m pip install virtualenv
-   * $ py -3.13 -m virtualenv sonoraienv
-   * $ source sonoraienv/Scripts/activate
-   * $ pip install -U -r requirements.txt
+    * $ py -3.13 -m pip install virtualenv
+    * $ py -3.13 -m virtualenv sonoraienv
+    * $ source sonoraienv/Scripts/activate
+    * $ pip install -U -r requirements.txt
 5. Setup the Django app and run a local server: 
-   * $ py manage.py makemigrations SonorAI
-   * $ py manage.py migrate
-   * $ py manage.py runserver
+    * $ py manage.py makemigrations SonorAI
+    * $ py manage.py migrate
+    * $ py manage.py runserver
+
+## Accessing admin site: 
+1. Append "admin/" to homepage/index url
+2. Sign in with username=admin & password=admin
 
 ## Using aiapp.py: 
 (class) AudioAnalysis                          <br>
