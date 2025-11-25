@@ -1,64 +1,75 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
-    <title>Register</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SonorAI - Sign Up</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 
 <body>
+    <!-- Navigation bar -->
+    <div id="app">
+        <div class="page active">
+            <div class="page-container">
 
-<!-- Navigation bar -->
-<nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">SonorAI</a>
+                <!-- Header -->
+                <header class="header">
+                    <div class="logo-box">
+                        <a href="/" class="logo-text">SonorAI</a>
+                    </div>
 
-        <ul class="nav navbar-nav navbar-right">
-            {% if user.is_authenticated %}
-            <li>
-                <a class="btn btn-link" href="#">{{ user.first_name }} ({{ user.username }})</a>
-                <a class="btn btn-link" href="{% url 'logout' %}">Logout</a>
-            </li>
-            {% else %}
-            <li>
-                <a class="btn btn-link" href="{% url 'login' %}">Login</a>
-                <a class="btn btn-link" href="{% url 'register' %}">Sign Up</a>
-            </li>
-            {% endif %}
-        </ul>
-    </div>
-</nav>
+                    <nav class="nav-buttons">
+                        <a href="{% url 'homepage' %}" class="nav-btn">Home</a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'myfiles' %}" class="nav-btn">My Files</a>
+                        <a href="{% url 'logout' %}" class="nav-btn">Logout</a>
+                        {% else %}
+                        <a href="{% url 'register' %}" class="nav-btn">Register</a>
+                        <a href="{% url 'login' %}" class="nav-btn">Login</a>
+                        {% endif %}
+                    </nav>
+                </header>
 
-<!-- Registration form -->
-<form action="{% url 'register' %}" method="post">
-    {% csrf_token %}
-    <div class="container mt-4">
-        <h1>Sign Up</h1>
+                <!-- Registration Section -->
+                <div class="login-wrapper">
+                    <div class="login-image-card">
+                        <img src="{% static 'SonorAI_logo.png' %}" alt="Sign Up Image">
+                    </div>
 
-        <div class="form-group">
-            <label for="username"><b>User Name:</b></label>
-            <input id="username" type="text" class="form-control" placeholder="Enter User Name" name="username" required>
+                    <!-- Registration Form -->
+                    <div class="login-form-card">
+                        <h2>Sign Up</h2>
 
-            <label for="firstname" class="mt-2"><b>First Name:</b></label>
-            <input id="firstname" type="text" class="form-control" placeholder="Enter First Name" name="firstname" required>
+                        <form action="{% url 'register' %}" method="post" class="login-form">
+                            {% csrf_token %}
+                            <label class="form-label">Email:</label>
+                            <input type="email" name="username" placeholder="Enter your email" class="form-input" required>
 
-            <label for="lastname" class="mt-2"><b>Last Name:</b></label>
-            <input id="lastname" type="text" class="form-control" placeholder="Enter Last Name" name="lastname" required>
+                            <label class="form-label">First Name:</label>
+                            <input type="text" name="firstname" placeholder="Enter your first name" class="form-input" required>
 
-            <label for="psw" class="mt-2"><b>Password:</b></label>
-            <input id="psw" type="password" class="form-control" placeholder="Enter Password" name="psw" required>
+                            <label class="form-label">Last Name:</label>
+                            <input type="text" name="lastname" placeholder="Enter your last name" class="form-input" required>
+
+                            <label class="form-label">Password:</label>
+                            <input type="password" name="psw" placeholder="Enter your password" class="form-input" required>
+
+                            {% if message %}
+                            <p class="form-warning">{{ message }}</p>
+                            {% endif %}
+
+                            <button class="login-btn" type="submit">
+                                <span>Register</span>
+                            </button>
+
+                            <a href="{% url 'login' %}" class="signup-link">Login</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        {% if message %}
-        <div class="alert alert-warning mt-3">
-            {{ message }}
-        </div>
-        {% endif %}
-
-        <button class="btn btn-primary mt-3" type="submit">Sign up</button>
     </div>
-</form>
-
 </body>
 </html>

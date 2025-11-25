@@ -1,11 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
-    <title>Home Page</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SonorAI - Home</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
 
+<script src="{% static 'script.js' %}"></script>
 <script src="https://www.verovio.org/javascript/latest/verovio-toolkit.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -15,83 +18,114 @@
         if (xml && notationDiv) {
             try {
                 const vrvToolkit = new verovio.toolkit();
-                vrvToolkit.setOptions({scale: 50})
-                vrvToolkit.loadData(xml.textContent);
+
+                vrvToolkit.setOptions({
+                    scale: 35,                 // baseline size
+                    pageWidth: 5000,           // large virtual page
+                    pageHeight: 2000,
+                    adjustPageHeight: true,
+                    breaks: "auto",            // allow normal line breaks
+                    ignoreLayout: 1
+                });
+
+                const xmlText = (xml.textContent || "").trim();
+                if (!xmlText) return;
+
+                vrvToolkit.loadData(xmlText);
                 const svg = vrvToolkit.renderToSVG(1, {});
                 notationDiv.innerHTML = svg;
+
+                const svgEl = notationDiv.querySelector("svg");
+                if (svgEl) {
+                    svgEl.removeAttribute("width");
+                    svgEl.removeAttribute("height");
+                    svgEl.setAttribute("preserveAspectRatio", "xMidYMid meet");
+                    svgEl.style.width = "100%";
+                    svgEl.style.height = "auto";
+                    svgEl.style.maxWidth = "100%";
+                }
+
             } catch (e) {
-                notationDiv.innerHTML = "<p class='text-danger'>Unable to render MusicXML.</p>";
+                notationDiv.innerHTML = "<p style='color:red'>Unable to render MusicXML.</p>";
                 console.error(e);
             }
         }
     });
 </script>
-</head>
+
 <body>
+    <!-- Navigation bar -->
+    <div id="app">
+        <div class="page active">
+            <div class="page-container">
 
-<!-- Navigation bar -->
-<nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">SonorAI</a>
-        </div>
-
-        <ul class="nav navbar-nav navbar-right">
-            {% if user.is_authenticated %}
-            <li>
-                <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-                <a class="btn btn-link" href="/myfiles/">My Files</a>
-                <a class="btn btn-link" href="{% url 'logout' %}">Logout</a>
-            </li>
-            {% else %}
-            <li>
-                <form class="form-inline" action="{% url 'login' %}" method="post">
-                    {% csrf_token %}
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Username" name="username" >
-                        <input type="password" class="form-control" placeholder="Password" name="psw" >
-                        <button class="btn btn-primary" type="submit">Login</button>
-                        <a class="btn btn-link" href="{% url 'register' %}">Sign Up</a>
+                <!-- Header -->
+                <header class="header">
+                    <div class="logo-box">
+                        <a href="/" class="logo-text">SonorAI</a>
                     </div>
-                </form>
-            </li>
-            {% endif %}
-        </ul>
 
+                    <nav class="nav-buttons">
+                        <a href="{% url 'homepage' %}" class="nav-btn">Home</a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'myfiles' %}" class="nav-btn">My Files</a>
+                        <a href="{% url 'logout' %}" class="nav-btn">Logout</a>
+                        {% else %}
+                        <a href="{% url 'register' %}" class="nav-btn">Register</a>
+                        <a href="{% url 'login' %}" class="nav-btn">Login</a>
+                        {% endif %}
+                    </nav>
+                </header>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="content-card">
+
+                        <!-- Header -->
+                        <div class="card-header">
+                            <div class="logo-image">
+                                <img src="{% static 'SonorAI_logo.png' %}" alt="SonorAI Logo">
+                            </div>
+                            <p class="title">Generate Music Tab</p>
+                        </div>
+
+                        <!-- Upload Section -->
+                        <div class="card-buttons">
+                            <form action="{% url 'upload_audio' %}" method="post"
+                                enctype="multipart/form-data" class="upload-form">
+                                {% csrf_token %}
+                                
+                                <label class="upload-btn">
+                                    <input type="file" id="audio_file" name="audio_file" accept=".wav" required>
+                                    <span>Upload Audio File</span>
+                                </label>
+                                
+                                <button type="submit" class="upload-btn">
+                                    <span>Submit</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Output Section -->
+                        {% if musicxml %}
+                        <div class="xml-card-container">
+                            <div class="xml-card">
+                                <h4 class="xml-card-title" style="margin-top:10px">MusicXML Preview</h4>
+
+                                {% if pk %}
+                                <a href="{% url 'download_musicxml' pk %}" class="xml-download-btn">Download MusicXML</a>
+                                {% endif %}
+
+                                <pre id="xmlText" class="xml-preview">{{ musicxml }}</pre>
+                                <h4 class="xml-card-title" style="margin-top:10px">Music Notation Preview</h4>
+                                <div id="notation" class="notation-preview"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</nav>
-
-<!--Upload Section-->
-<h3>Upload Audio File (*.wav)</h3>
-<form action="{% url 'upload_audio' %}" method="post" enctype="multipart/form-data" class="mt-3">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="audio_file">Choose WAV file:</label>
-        <input type="file" class="form-control-file" id="audio_file" name="audio_file" accept=".wav" required>
-    </div>
-    <button type="submit" class="btn btn-primary mt-2">Upload</button>
-</form>
-{% if message %}
-<p class="alert alert-info mt-3">{{ message }}</p>
-{% endif %}
-
-<!--Output Section-->
-{% if musicxml %}
-<div class="mt-4 p-3 border rounded bg-light">
-    <h4>MusicXML Output</h4>
-    <!--Download button for signed in users-->
-    {% if pk %}
-        <a class="btn btn-success mb-3" 
-           href="{% url 'download_musicxml' pk %}">
-            Download MusicXML
-        </a>
-    {% endif %}
-    <!--MusicXML Output-->
-    <pre id="xmlText" style="white-space: pre-wrap; max-height:200px; overflow:auto;">{{ musicxml }}</pre>
-    <h4 class="mt-4">Music Notation Preview</h4>
-    <div id="notation" class="border p-3"></div>
-</div>
-{% endif %}
-
 </body>
 </html>

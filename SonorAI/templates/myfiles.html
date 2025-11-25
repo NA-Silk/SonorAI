@@ -1,83 +1,87 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
-    <title>My Files</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SonorAI - My Files</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 
 <body>
+    <!-- Navigation bar -->
+    <div id="app">
+        <div class="page active">
+            <div class="page-container">
 
-<!-- Navigation bar -->
-<nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">SonorAI</a>
+                <!-- Header -->
+                <header class="header">
+                    <div class="logo-box">
+                        <a href="/" class="logo-text">SonorAI</a>
+                    </div>
 
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a class="btn btn-link" href="#">{{ user.first_name }} ({{ user.username }})</a>
-                <a class="btn btn-link" href="{% url 'logout' %}">Logout</a>
-            </li>
-        </ul>
+                    <nav class="nav-buttons">
+                        <a href="{% url 'homepage' %}" class="nav-btn">Home</a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'myfiles' %}" class="nav-btn">My Files</a>
+                        <a href="{% url 'logout' %}" class="nav-btn">Logout</a>
+                        {% else %}
+                        <a href="{% url 'register' %}" class="nav-btn">Register</a>
+                        <a href="{% url 'login' %}" class="nav-btn">Login</a>
+                        {% endif %}
+                    </nav>
+                </header>
+
+                <!-- Files Section -->
+                <div class="files-content">
+
+                    <!-- Header -->
+                    <div class="files-header-bar">
+                        <div class="files-logo">
+                            <img src="{% static 'SonorAI_logo.png' %}" alt="My Files Image">
+                        </div>
+                        <p class="files-title">My Files</p>
+                    </div>
+
+                    <!-- Files Container -->
+                    <div class="files-card">
+                        <div class="files-body">
+                            
+                            {% if files %}
+                                {% for file in files %}
+
+                                    <!-- File Data -->
+                                    <div class="file-item-card">
+                                        <div class="file-item-left">
+                                            <p class="file-name">{{ file.title }}</p>
+                                            <p class="file-date">{{ file.creation_date }}</p>
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="file-item-right">
+                                            <!-- Rename -->
+                                            <form action="{% url 'rename_myfiles' file.pk %}" method="post" class="rename-form">
+                                                {% csrf_token %}
+                                                <input type="text" name="name" value="{{ file.title }}" class="rename-input">
+                                                <button type="submit" class="file-btn rename-btn">Rename</button>
+                                            </form>
+                                            <!-- Download -->
+                                            <a href="{% url 'download_musicxml' file.pk %}" class="file-btn">Download</a>
+                                            <!-- Delete -->
+                                            <a href="{% url 'delete_myfiles' file.pk %}" class="file-btn delete-btn">Delete</a>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                            {% else %}
+                                <p class="no-files-text">No saved files found.</p>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</nav>
-
-<div class="container mt-4">
-    <h2>Your MusicXML Files</h2>
-
-    {% if files %}
-    <table class="table table-bordered mt-4">
-        <thead>
-            <tr>
-                <th style="width: 200px;">Title</th>
-                <th style="width: 150px;">Creation Date</th>
-                <th style="white-space: nowrap;">Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for file in files %}
-            <tr>
-                <td>{{ file.title }}</td>
-                <td>{{ file.creation_date }}</td>
-                <td>
-                    <!-- Download -->
-                    <a href="{% url 'download_musicxml' file.pk %}" 
-                       class="btn btn-success btn-sm">
-                        Download
-                    </a>
-
-                    <!-- Rename (inline textbox) -->
-                    <form action="{% url 'rename_myfiles' file.pk %}" 
-                          method="post" 
-                          style="display:inline-flex; gap:8px; margin:0;">
-                        {% csrf_token %}
-                        <input type="text" 
-                               name="name" 
-                               value="{{ file.title }}" 
-                               class="form-control form-control-sm" 
-                               style="max-width: 250px;">
-                        <button type="submit" class="btn btn-primary btn-sm">
-                            Rename
-                        </button>
-                    </form>
-
-                    <!-- Delete -->
-                    <a href="{% url 'delete_myfiles' file.pk %}" 
-                       class="btn btn-danger btn-sm">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    {% else %}
-    <h4>No saved MusicXML files</h4>
-    {% endif %}
-</div>
-
 </body>
 </html>
