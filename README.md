@@ -1,18 +1,21 @@
 # SonorAI
 
+## Deployment Link: 
+https://sonorai.onrender.com/
+
 ## Setting up dev environment: 
 1. Ensure Python 3.12-3.13 is installed (Python 3.13.9 is recommended)
 2. Ensure "C:\Users\<user>\AppData\Roaming\Python\<python version>\Scripts" is in PATH
 3. Configure a local copy of the git repository
 4. Setup the project Python environment: 
-    * $ py -3.13 -m pip install virtualenv
-    * $ py -3.13 -m virtualenv sonoraienv
-    * $ source sonoraienv/Scripts/activate
-    * $ pip install -U -r requirements.txt
+    - $ py -3.13 -m pip install virtualenv
+    - $ py -3.13 -m virtualenv sonoraienv
+    - $ source sonoraienv/Scripts/activate
+    - $ pip install -U -r requirements.txt
 5. Setup the Django app and run a local server: 
-    * $ py manage.py makemigrations SonorAI
-    * $ py manage.py migrate
-    * $ py manage.py runserver
+    - $ py manage.py makemigrations SonorAI
+    - $ py manage.py migrate
+    - $ py manage.py runserver
 
 ## Accessing admin site: 
 1. Append "admin/" to homepage/index url
@@ -31,3 +34,13 @@
 ) -> output_path: MusicXML                     <br>
 
 example: &emsp; AudioAnalysis.audio_analysis(audio_file)
+
+## References: 
+- https://www.musicradar.com/news/tech/free-music-samples-royalty-free-loops-hits-and-multis-to-download-sampleradar
+- https://www.djangoproject.com/
+- https://librosa.org/doc/latest/index.html
+- https://github.com/marl/crepe
+- https://www.music21.org/music21docs/moduleReference/index.html
+- https://www.verovio.org/index.xhtml
+- https://appliku.com/guides/how-to-deploy-django-project/
+- https://render.com/
