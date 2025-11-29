@@ -1,3 +1,4 @@
 #!/bin/bash
-set -e
-gunicorn project.wsgi --log-file -
+set -o errexit
+
+gunicorn SonorAI.wsgi:application --bind 0.0.0.0:$PORT

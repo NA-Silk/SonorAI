@@ -1,4 +1,5 @@
 #!/bin/bash
-set -e
-python manage.py migrate
-python manage.py makesuperuser
+set -o errexit
+
+python manage.py migrate --noinput
+python manage.py collectstatic --noinput
