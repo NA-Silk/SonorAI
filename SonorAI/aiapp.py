@@ -48,7 +48,13 @@ class AudioAnalysis:
 
         
         # Apply CREPE nn analysis
-        time, frequency, confidence, _ = crepe.predict(audio=y, sr=sr, viterbi=True)
+        time, frequency, confidence, _ = crepe.predict(
+            audio=y,
+            sr=sr,
+            viterbi=True,
+            model_capacity="tiny",   
+            step_size=20,            # fewer frames to process
+            )
         
         # Get MIDI note integers for each time frame and trim low confidence notes
         midi_ints = [cls.frequency_to_midi(f) for f in frequency]
