@@ -39,7 +39,13 @@ class AudioAnalysis:
         import crepe
         import tensorflow 
 
-        y, sr = librosa.load(path=audio_file, sr=None, mono=True)
+        y, sr = librosa.load(
+            path=audio_file,
+            sr=16000,        # downsample to 16 kHz to save memory
+            mono=True,
+            dtype="float32", # half the size of float64
+        )
+
         
         # Apply CREPE nn analysis
         time, frequency, confidence, _ = crepe.predict(audio=y, sr=sr, viterbi=True)
@@ -67,8 +73,8 @@ class AudioAnalysis:
                 }
 
                 # Find end_time by similar sequential MIDI note integers
-                j = i+1
-                while midi_ints[j] == note["midi_int"] and j < len(time): 
+                j = i + 1
+                while j < len(time) and midi_ints[j] == note["midi_int"]:
                     j += 1
                 note["end_time"] = time[j-1] + delta
                 note["length"] = note["end_time"] - note["start_time"]
