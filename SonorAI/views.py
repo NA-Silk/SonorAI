@@ -165,11 +165,12 @@ def rename_myfiles(request, pk):
     return redirect("myfiles")
 
 # Pages
-def homepage_view(request): 
+def homepage_view(request):
     context = {}
-    # Check method
-    if request.method == 'GET': 
+    if request.method in ("GET", "HEAD"):
         return render(request, "index.html", context)
+    # fall back to same page for any other method
+    return render(request, "index.html", context)
 
 def myfiles_view(request): 
     context = {}
