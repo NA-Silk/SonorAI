@@ -81,17 +81,7 @@ class AudioAnalysis:
     
     @staticmethod
     def get_tempo(y, sr): 
-        """Get tempo using librosa"""
-        
-        import librosa # Lazy import 
-        # Separate harmonics and percussives
-        _, y_percussive = librosa.effects.hpss(y)
-        # Get tempo using librosa.beat.beat_track with percussive waveform
-        tempo, _ = librosa.beat.beat_track(y=y_percussive, sr=sr)
-        # If tempo retrieval fails, assume 120.0
-        if tempo <= 0: 
-            tempo = 120.0
-        return float(tempo)
+        return 120.0
     
     @staticmethod
     def get_quarter_frame(time, tempo): 
