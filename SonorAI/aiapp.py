@@ -1,9 +1,9 @@
 import numpy as np
-import librosa
+#import librosa # import in function to only load them when needed
 import soundfile as sf
-import crepe
+#import crepe # import in function to only load them when needed
 from collections import defaultdict
-import tensorflow
+#import tensorflow # import in function to only load them when needed
 
 from music21 import pitch, stream
 from music21.instrument import AcousticGuitar
@@ -34,6 +34,11 @@ class AudioAnalysis:
         """Get notes using CREPE neural network analysis"""
         # Load audio_file using librosa (y=audio waveform, sr=sample rate)
         # NOTE: sr=None preserves file sample rate, mono=True assumes 1 audio source
+        # Lazy imports so heavy libraries only load when needed
+        import librosa
+        import crepe
+        import tensorflow 
+
         y, sr = librosa.load(path=audio_file, sr=None, mono=True)
         
         # Apply CREPE nn analysis
@@ -77,6 +82,8 @@ class AudioAnalysis:
     @staticmethod
     def get_tempo(y, sr): 
         """Get tempo using librosa"""
+        
+        import librosa # Lazy import 
         # Separate harmonics and percussives
         _, y_percussive = librosa.effects.hpss(y)
         # Get tempo using librosa.beat.beat_track with percussive waveform

@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic, View
 from django.contrib.auth import login, logout, authenticate
-from . import aiapp
+#from . import aiapp # removed to avoid loading TensorFlow at startup
 from collections import defaultdict
 import logging
 import os
@@ -76,6 +76,9 @@ def upload_audio(request):
     context = {}
     # Check method
     if request.method == 'POST': 
+        # lazy import so TensorFlow / crepe only load when needed
+        from . import aiapp
+        
         audio_file = request.FILES.get('audio_file')
         
         # Check upload parameters
